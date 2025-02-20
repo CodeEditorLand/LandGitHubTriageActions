@@ -13,35 +13,25 @@ exports.meetsReviewThreshold =
 const web_api_1 = require("@slack/web-api");
 const utils_1 = require("../common/utils");
 function createPRObject(pullRequestFromApi) {
-	var _a, _b, _c, _d;
-	const pr = {
-		number: pullRequestFromApi.number,
-		body: pullRequestFromApi.body || "",
-		additions: pullRequestFromApi.additions,
-		deletions: pullRequestFromApi.deletions,
-		changed_files: pullRequestFromApi.changed_files,
-		url: pullRequestFromApi.html_url || "",
-		owner: pullRequestFromApi.user.login,
-		draft: pullRequestFromApi.draft || false,
-		baseBranchName:
-			(_a = pullRequestFromApi.base.ref) !== null && _a !== void 0
-				? _a
-				: "",
-		headBranchName:
-			(_b = pullRequestFromApi.head.ref) !== null && _b !== void 0
-				? _b
-				: "",
-		title: pullRequestFromApi.title,
-		headLabel:
-			((_c = pullRequestFromApi.head.repo) === null || _c === void 0
-				? void 0
-				: _c.full_name) || "",
-		fork:
-			((_d = pullRequestFromApi.head.repo) === null || _d === void 0
-				? void 0
-				: _d.fork) || false,
-	};
-	return pr;
+    var _a, _b, _c, _d;
+    const pr = {
+        number: pullRequestFromApi.number,
+        body: pullRequestFromApi.body || '',
+        additions: pullRequestFromApi.additions,
+        deletions: pullRequestFromApi.deletions,
+        changed_files: pullRequestFromApi.changed_files,
+        url: pullRequestFromApi.html_url || '',
+        owner: pullRequestFromApi.user.login,
+        draft: pullRequestFromApi.draft || false,
+        baseBranchName: (_a = pullRequestFromApi.base.ref) !== null && _a !== void 0 ? _a : '',
+        headBranchName: (_b = pullRequestFromApi.head.ref) !== null && _b !== void 0 ? _b : '',
+        title: pullRequestFromApi.title,
+        headLabel: ((_c = pullRequestFromApi.head.repo) === null || _c === void 0 ? void 0 : _c.full_name) || '',
+        fork: (((_d = pullRequestFromApi.head.repo) === null || _d === void 0 ? void 0 : _d.fork) &&
+            pullRequestFromApi.head.repo.full_name != pullRequestFromApi.base.repo.full_name) ||
+            false,
+    };
+    return pr;
 }
 exports.createPRObject = createPRObject;
 class Chatter {
