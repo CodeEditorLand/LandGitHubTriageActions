@@ -5,7 +5,7 @@
 		"@octokit/auth-app": "7.1.5",
 		"@octokit/rest": "21.1.1",
 		"@slack/web-api": "7.8.0",
-		"axios": "1.8.1",
+		"axios": "1.8.2",
 		"uuid": "11.1.0"
 	},
 	"description": "GitHub Actions used by VS Code for triaging issues",
