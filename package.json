@@ -1,9 +1,32 @@
 {
 	"name": "@codeeditorland/github-triage-actions",
+	"version": "0.0.1",
+	"private": false,
 	"description": "GitHub Actions used by VS Code for triaging issues",
+	"keywords": [
+		"codeeditorland",
+		"land",
+		"playform"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandGitHubTriageActions#readme",
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandGitHubTriageActions/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandGitHubTriageActions.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "Source 🖋️ Open 👐🏻",
+		"email": "Source/Open@Editor.Land",
+		"url": "HTTPS://Editor.Land"
+	},
+	"type": "module",
 	"scripts": {
 		"build": "tsc",
-		"compile": "tsc"
+		"compile": "tsc",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
 	},
 	"dependencies": {
 		"@actions/core": "1.11.1",
@@ -15,11 +38,15 @@
 		"uuid": "11.1.0"
 	},
 	"devDependencies": {
+		"@playform/build": "0.2.1",
 		"@types/chai": "5.2.1",
 		"@types/uuid": "10.0.0",
 		"@types/yargs": "17.0.33",
 		"chai": "5.2.0",
 		"nock": "14.0.2",
 		"yargs": "17.7.2"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
