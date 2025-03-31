@@ -19,7 +19,7 @@ export class RegexFlagger {
 		const issue = await this.github.getIssue();
 		if (!issue) return;
 
-		const stripped = issue.body.replace(/<!--.*?-->/g, '');
+		const stripped = issue.body.replace(/<!--.*?-->/g, "");
 		if (
 			(this.mustNotMatch &&
 				new RegExp(this.mustNotMatch, "i").test(stripped)) ||

@@ -376,7 +376,9 @@ export class OctoKit implements GitHub {
 
 		if (isEndGame && possibleMilestones.length > 1) {
 			const timeDiff =
-				new Date(possibleMilestones[0].due_on ?? currentDate).getTime() - currentDate.getTime();
+				new Date(
+					possibleMilestones[0].due_on ?? currentDate,
+				).getTime() - currentDate.getTime();
 			const daysDiff = timeDiff / (1000 * 3600 * 24);
 			// If the milestone is less than 14 days away, use the next milestone
 			if (daysDiff < 14) {
@@ -491,20 +493,20 @@ export class OctoKitIssue extends OctoKit implements GitHubIssue {
 			return this.issueData;
 		}
 
-		safeLog('Fetching issue ' + this.issueData.number);
+		safeLog("Fetching issue " + this.issueData.number);
 		try {
 			const issue = (
 				await this.octokit.rest.issues.get({
 					...this.params,
 					issue_number: this.issueData.number,
-					mediaType: { previews: ['squirrel-girl'] },
+					mediaType: { previews: ["squirrel-girl"] },
 				})
 			).data;
 			return (this.issueData = this.octokitIssueToIssue(issue));
 		} catch (err) {
 			const statusError = err as RequestError;
 			if (statusError.status === 404) {
-				safeLog('Issue not found');
+				safeLog("Issue not found");
 				return;
 			}
 			throw err;
@@ -549,12 +551,20 @@ export class OctoKitIssue extends OctoKit implements GitHubIssue {
 	async *getComments(last?: boolean): AsyncIterableIterator<Comment[]> {
 		safeLog("Fetching comments for " + this.issueData.number);
 
-		const response = this.octokit.paginate.iterator(this.octokit.rest.issues.listComments, {
-			...this.params,
-			issue_number: this.issueData.number,
-			per_page: 100,
-			...(last ? { per_page: 1, page: (await this.getIssue())?.numComments } : {}),
-		});
+		const response = this.octokit.paginate.iterator(
+			this.octokit.rest.issues.listComments,
+			{
+				...this.params,
+				issue_number: this.issueData.number,
+				per_page: 100,
+				...(last
+					? {
+							per_page: 1,
+							page: (await this.getIssue())?.numComments,
+						}
+					: {}),
+			},
+		);
 
 		for await (const page of response) {
 			numRequests++;
@@ -750,7 +760,12 @@ export class OctoKitIssue extends OctoKit implements GitHubIssue {
 				}).getClosingInfo(alreadyChecked);
 
 				if (closed) {
-					if (Math.abs(closed.timestamp - ((await this.getIssue())?.closedAt ?? 0)) < 5000) {
+					if (
+						Math.abs(
+							closed.timestamp -
+								((await this.getIssue())?.closedAt ?? 0),
+						) < 5000
+					) {
 						closingCommit = closed;
 
 						break;

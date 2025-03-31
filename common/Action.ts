@@ -373,8 +373,12 @@ export async function getAuthenticationToken(): Promise<string> {
 
 		while (attempts < maxAttempts) {
 			try {
-				const appAuth = createAppAuth({ appId, installationId, privateKey });
-				return (await appAuth({ type: 'installation' })).token;
+				const appAuth = createAppAuth({
+					appId,
+					installationId,
+					privateKey,
+				});
+				return (await appAuth({ type: "installation" })).token;
 			} catch (error: any) {
 				if (error.response && error.response.status === 504) {
 					attempts++;
@@ -383,7 +387,9 @@ export async function getAuthenticationToken(): Promise<string> {
 						`Attempt ${attempts} failed with 504 error. Retrying in ${delay / 1000} seconds.`,
 					);
 					if (attempts >= maxAttempts) {
-						throw new Error('Max retry attempts reached. Please try again later');
+						throw new Error(
+							"Max retry attempts reached. Please try again later",
+						);
 					}
 					await new Promise((resolve) => setTimeout(resolve, delay));
 				} else {
@@ -392,5 +398,5 @@ export async function getAuthenticationToken(): Promise<string> {
 			}
 		}
 	}
-	throw Error('Failed to get authentication token');
+	throw Error("Failed to get authentication token");
 }

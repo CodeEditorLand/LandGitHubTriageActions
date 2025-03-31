@@ -33,7 +33,9 @@ export class NeedsMoreInfoCloser {
 				const hydrated = await issue.getIssue();
 				if (!hydrated) continue;
 
-				const lastCommentIterator = await issue.getComments(true).next();
+				const lastCommentIterator = await issue
+					.getComments(true)
+					.next();
 				if (lastCommentIterator.done) {
 					throw Error("Unexpected comment data");
 				}

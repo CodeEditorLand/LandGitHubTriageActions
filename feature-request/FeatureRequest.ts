@@ -89,7 +89,10 @@ export class FeatureRequestQueryer {
 		const issueData = await issue.getIssue();
 		if (!issueData) return;
 
-		if (!issueData.reactions) throw Error('No reaction data in issue ' + JSON.stringify(issueData));
+		if (!issueData.reactions)
+			throw Error(
+				"No reaction data in issue " + JSON.stringify(issueData),
+			);
 
 		if (
 			issueData.reactions["+1"] >= this.config.upvotesRequired &&

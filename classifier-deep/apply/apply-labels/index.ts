@@ -119,7 +119,9 @@ class ApplyLabels extends Action {
 
 			// Check if the issue has any cc'ed users and assign them if they are available
 			const issueBody = issueData.body;
-			const ccMatches = (issueBody.match(/@(\w+)/g) || []).map((match) => match.replace('@', ''));
+			const ccMatches = (issueBody.match(/@(\w+)/g) || []).map((match) =>
+				match.replace("@", ""),
+			);
 			let performedAssignment = false;
 			for (const ccMatch of ccMatches) {
 				if (triagers.includes(ccMatch)) {

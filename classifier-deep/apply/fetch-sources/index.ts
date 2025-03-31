@@ -98,7 +98,8 @@ class FetchIssues extends Action {
 									.getIssue();
 								if (!linkedIssueData) continue;
 
-								const normalized = normalizeIssue(linkedIssueData);
+								const normalized =
+									normalizeIssue(linkedIssueData);
 								additionalInfo = `\n\n${normalized.title}\n\n${normalized.body}`;
 
 								const linkedIssueAssignee =

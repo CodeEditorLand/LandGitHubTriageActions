@@ -97,10 +97,11 @@ export function createPRObject(pullRequestFromApi: any): PR {
 		baseBranchName: pullRequestFromApi.base.ref ?? "",
 		headBranchName: pullRequestFromApi.head.ref ?? "",
 		title: pullRequestFromApi.title,
-		headLabel: pullRequestFromApi.head.repo?.full_name || '',
+		headLabel: pullRequestFromApi.head.repo?.full_name || "",
 		fork:
 			(pullRequestFromApi.head.repo?.fork &&
-				pullRequestFromApi.head.repo.full_name != pullRequestFromApi.base.repo.full_name) ||
+				pullRequestFromApi.head.repo.full_name !=
+					pullRequestFromApi.base.repo.full_name) ||
 			false,
 	};
 
@@ -108,7 +109,10 @@ export function createPRObject(pullRequestFromApi: any): PR {
 }
 
 class Chatter {
-	constructor(protected slackToken: string, protected notificationChannelID: string) {}
+	constructor(
+		protected slackToken: string,
+		protected notificationChannelID: string,
+	) {}
 
 	async getChat(): Promise<{ client: WebClient; channel: string }> {
 		const web = new WebClient(this.slackToken);
@@ -373,7 +377,9 @@ export class CodeReviewChat extends Chatter {
 		try {
 			isEndGame = (await isInsiderFrozen()) ?? false;
 		} catch (error) {
-			safeLog(`Error determining if insider is frozen: ${(error as Error).message}`);
+			safeLog(
+				`Error determining if insider is frozen: ${(error as Error).message}`,
+			);
 		}
 
 		// This is an external PR which already received one review and is just awaiting a second
@@ -474,7 +480,7 @@ export class CodeReviewChat extends Chatter {
 						owner: this.options.payload.owner,
 						repo: this.options.payload.repo,
 						issue_number: this.pullRequestNumber,
-						body: '⚠️ This PR originates from a fork. Due to security restrictions, pipelines from forks are no longer triggered automatically. [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#comment-triggers).\n\nIf the changes appear safe, you can manually trigger the pipeline by commenting `/AzurePipelines run`.',
+						body: "⚠️ This PR originates from a fork. Due to security restrictions, pipelines from forks are no longer triggered automatically. [Learn more](https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/github?view=azure-devops&tabs=yaml#comment-triggers).\n\nIf the changes appear safe, you can manually trigger the pipeline by commenting `/AzurePipelines run`.",
 					});
 				})(),
 			);

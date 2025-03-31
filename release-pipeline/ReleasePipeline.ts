@@ -25,7 +25,10 @@ export class ReleasePipeline {
 				const issueData = await issue.getIssue();
 				if (!issueData) continue;
 
-				if (issueData.labels.includes(this.notYetReleasedLabel) && issueData.open === false) {
+				if (
+					issueData.labels.includes(this.notYetReleasedLabel) &&
+					issueData.open === false
+				) {
 					await this.update(issue, latestRelease);
 
 					await new Promise((resolve) => setTimeout(resolve, 1000));

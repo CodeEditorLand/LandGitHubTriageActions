@@ -28,9 +28,9 @@ export class NewRelease {
 		const issue = await this.github.getIssue();
 		if (!issue) return;
 
-		const cleansed = issue.body.replace(/<!-- .* -->/g, '');
-		const productVersion = release.productVersion.endsWith('.0')
-			? release.productVersion.replace(/\.0$/, '')
+		const cleansed = issue.body.replace(/<!-- .* -->/g, "");
+		const productVersion = release.productVersion.endsWith(".0")
+			? release.productVersion.replace(/\.0$/, "")
 			: release.productVersion;
 
 		if (

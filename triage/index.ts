@@ -3,24 +3,35 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { getInput } from '@actions/core';
-import { OctoKit, OctoKitIssue } from '../api/octokit';
-import { VSCodeToolsAPIManager } from '../api/vscodeTools';
-import { Action, getAuthenticationToken } from '../common/Action';
-import { daysAgoToHumanReadbleDate, getRequiredInput, safeLog } from '../common/utils';
+import { getInput } from "@actions/core";
+
+import { OctoKit, OctoKitIssue } from "../api/octokit";
+import { VSCodeToolsAPIManager } from "../api/vscodeTools";
+import { Action, getAuthenticationToken } from "../common/Action";
+import {
+	daysAgoToHumanReadbleDate,
+	getRequiredInput,
+	safeLog,
+} from "../common/utils";
 
 class IssueTriageAction extends Action {
-	id = 'IssueTriageAction';
+	id = "IssueTriageAction";
 
-	private async triage(issue: OctoKitIssue, skipTeamCheck = false): Promise<void> {
+	private async triage(
+		issue: OctoKitIssue,
+		skipTeamCheck = false,
+	): Promise<void> {
 		try {
 			const githubIssue = await issue.getIssue();
-			if (!githubIssue || githubIssue.labels.includes('testplan-item')) return;
+			if (!githubIssue || githubIssue.labels.includes("testplan-item"))
+				return;
 			const vscodeToolsAPI = new VSCodeToolsAPIManager();
-			const teamMembers = new Set((await vscodeToolsAPI.getTeamMembers()).map((t) => t.id));
+			const teamMembers = new Set(
+				(await vscodeToolsAPI.getTeamMembers()).map((t) => t.id),
+			);
 			if (!skipTeamCheck && teamMembers.has(githubIssue.author.name)) {
 				if (githubIssue.assignees.length === 0) {
-					const link = getInput('workingAreasLink');
+					const link = getInput("workingAreasLink");
 					if (link) {
 						await issue.postComment(
 							`Hi @${githubIssue.author.name}. As a member of the team, you can help us triage this issue by referring to ${link}`,
@@ -31,7 +42,10 @@ class IssueTriageAction extends Action {
 						);
 					}
 				}
-				safeLog('Author is a team member, skipping triaging', githubIssue.author.name);
+				safeLog(
+					"Author is a team member, skipping triaging",
+					githubIssue.author.name,
+				);
 				return;
 			}
 
@@ -40,21 +54,24 @@ class IssueTriageAction extends Action {
 				return;
 			}
 
-			await issue.addLabel('triage-needed');
-			const assignees: string[] = getRequiredInput('assignees').split('|');
+			await issue.addLabel("triage-needed");
+			const assignees: string[] =
+				getRequiredInput("assignees").split("|");
 
 			if (assignees.length === 0) {
-				safeLog('No assignees provided');
+				safeLog("No assignees provided");
 				return;
 			}
 
 			const triagers = await vscodeToolsAPI.getTriagerGitHubIds();
 			if (triagers.length === 0) {
-				safeLog('No available triagers found');
+				safeLog("No available triagers found");
 				return;
 			}
 
-			const available = assignees.filter((assignee) => triagers.includes(assignee));
+			const available = assignees.filter((assignee) =>
+				triagers.includes(assignee),
+			);
 			if (available) {
 				// Shuffle the array
 				for (let i = available.length - 1; i > 0; i--) {
@@ -63,13 +80,13 @@ class IssueTriageAction extends Action {
 				}
 
 				const randomSelection = available[0];
-				safeLog('assigning', randomSelection);
+				safeLog("assigning", randomSelection);
 				await issue.addAssignee(randomSelection);
 			} else {
-				safeLog('No available triagers');
+				safeLog("No available triagers");
 			}
 		} catch (e) {
-			safeLog('Error assigning random triager', (e as any).message);
+			safeLog("Error assigning random triager", (e as any).message);
 		}
 	}
 
@@ -80,8 +97,8 @@ class IssueTriageAction extends Action {
 	}
 
 	protected override async onTriggered(_octokit: OctoKit): Promise<void> {
-		const owner = getRequiredInput('owner');
-		const repo = getRequiredInput('repo');
+		const owner = getRequiredInput("owner");
+		const repo = getRequiredInput("repo");
 		const token = await getAuthenticationToken();
 
 		const staleIssues = _octokit.query({
@@ -93,11 +110,15 @@ class IssueTriageAction extends Action {
 			for (const issueData of page) {
 				const issue = await issueData.getIssue();
 				if (!issue) continue;
-				const octokitIssue = new OctoKitIssue(token, { owner, repo }, { number: issue?.number });
+				const octokitIssue = new OctoKitIssue(
+					token,
+					{ owner, repo },
+					{ number: issue?.number },
+				);
 				await this.triage(octokitIssue, true);
 			}
 		}
-		safeLog('Completed triaging stale issues.');
+		safeLog("Completed triaging stale issues.");
 	}
 }
 
