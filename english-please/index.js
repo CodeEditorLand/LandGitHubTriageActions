@@ -15,32 +15,23 @@ const cognitiveServicesAPIKey = (0, utils_1.getRequiredInput)(
 	"cognitiveServicesAPIKey",
 );
 class EnglishPlease extends Action_1.Action {
-	constructor() {
-		super(...arguments);
-		this.id = "EnglishPlease";
-	}
-	async onOpened(issue) {
-		await new EnglishPlease_1.EnglishPleaseLabler(
-			issue,
-			nonEnglishLabel,
-		).run();
-	}
-	async doLanguageSpecific(issue) {
-		await new EnglishPlease_1.LanguageSpecificLabeler(
-			issue,
-			translatorRequestedLabelPrefix,
-			translatorRequestedLabelColor,
-			nonEnglishLabel,
-			needsMoreInfoLabel,
-			cognitiveServicesAPIKey,
-		).run();
-	}
-	async onEdited(issue) {
-		await this.doLanguageSpecific(issue);
-	}
-	async onLabeled(issue, label) {
-		if (label == nonEnglishLabel) await this.doLanguageSpecific(issue);
-	}
+    constructor() {
+        super(...arguments);
+        this.id = 'EnglishPlease';
+    }
+    async onOpened(issue) {
+        await new EnglishPlease_1.EnglishPleaseLabler(issue, nonEnglishLabel).run();
+    }
+    async doLanguageSpecific(issue, shouldLeaveEnComment = false) {
+        await new EnglishPlease_1.LanguageSpecificLabeler(issue, translatorRequestedLabelPrefix, translatorRequestedLabelColor, nonEnglishLabel, needsMoreInfoLabel, cognitiveServicesAPIKey, shouldLeaveEnComment).run();
+    }
+    async onEdited(issue) {
+        await this.doLanguageSpecific(issue);
+    }
+    async onLabeled(issue, label) {
+        if (label == nonEnglishLabel)
+            await this.doLanguageSpecific(issue, true /* shouldLeaveEnComment */);
+    }
 }
 new EnglishPlease().run(); // eslint-disable-line
 //# sourceMappingURL=index.js.map

@@ -55,6 +55,7 @@ export class LanguageSpecificLabeler {
 		private englishPleaseLabel: string,
 		private needsMoreInfoLabel: string,
 		private cognitiveServicesAPIKey: string,
+		private shouldLeaveEnComment: boolean,
 	) {}
 
 	private async detectLanguage(chunk: string): Promise<string | undefined> {
@@ -163,6 +164,9 @@ export class LanguageSpecificLabeler {
 			await this.issue.removeLabel(this.englishPleaseLabel);
 
 			await this.issue.removeLabel(this.needsMoreInfoLabel);
+			if (this.shouldLeaveEnComment) {
+				await this.issue.postComment(`${baseString}\n<!-- translation_requested_comment -->`);
+			}
 		} else if (language) {
 			const label =
 				this.translatorRequestedLabelPrefix + commonNames[language];
